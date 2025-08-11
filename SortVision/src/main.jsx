@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import './index.css'
+import { AudioProvider } from "./context/AudioContext";
+
 
 // Lazy load App component for better initial load time
 const App = lazy(() => import('./App.jsx'));
@@ -61,44 +63,13 @@ if ('requestIdleCallback' in window) {
   requestIdleCallback(() => {
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(
-      <React.StrictMode>
-        <HelmetProvider>
-          <BrowserRouter>
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/algorithms/:algorithmName" element={<App />} />
-                <Route path="/contributions/overview" element={<App />} />
-                <Route path="/contributions/guide" element={<App />} />
-                <Route path="/contributions/ssoc" element={<App />} />
-                <Route path="/contributions" element={<App />} />
-                <Route path="*" element={<App />} />
-              </Routes>
-            </Suspense>
-            {shouldRenderAnalytics && (
-              <Suspense fallback={null}>
-                <SpeedInsights debug={import.meta.env.DEV} />
-                <Analytics beforeSend={beforeSend} />
-              </Suspense>
-            )}
-          </BrowserRouter>
-        </HelmetProvider>
-      </React.StrictMode>
-    );
-  }, { timeout: 100 }); // Short timeout to ensure it runs quickly but not during critical rendering
-} else {
-  // Fallback for browsers that don't support requestIdleCallback
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render(
-    <React.StrictMode>
-      <HelmetProvider>
-        <BrowserRouter>
-          <Suspense fallback={<LoadingFallback />}>
+  <React.StrictMode>
+    <HelmetProvider>
+      <BrowserRouter>
+        <Suspense fallback={<LoadingFallback />}>
+          <AudioProvider>
             <Routes>
               <Route path="/" element={<App />} />
-              <Route path="/algorithms/config/:algorithmName" element={<App />} />
-              <Route path="/algorithms/details/:algorithmName" element={<App />} />
-              <Route path="/algorithms/metrics/:algorithmName" element={<App />} />
               <Route path="/algorithms/:algorithmName" element={<App />} />
               <Route path="/contributions/overview" element={<App />} />
               <Route path="/contributions/guide" element={<App />} />
@@ -106,15 +77,47 @@ if ('requestIdleCallback' in window) {
               <Route path="/contributions" element={<App />} />
               <Route path="*" element={<App />} />
             </Routes>
+          </AudioProvider>
+        </Suspense>
+        {shouldRenderAnalytics && (
+          <Suspense fallback={null}>
+            <SpeedInsights debug={import.meta.env.DEV} />
+            <Analytics beforeSend={beforeSend} />
           </Suspense>
-          {shouldRenderAnalytics && (
-            <Suspense fallback={null}>
-              <SpeedInsights debug={import.meta.env.DEV} />
-              <Analytics beforeSend={beforeSend} />
-            </Suspense>
-          )}
-        </BrowserRouter>
-      </HelmetProvider>
-    </React.StrictMode>
-  );
+        )}
+      </BrowserRouter>
+    </HelmetProvider>
+  </React.StrictMode>
+);
+  }, { timeout: 100 }); // Short timeout to ensure it runs quickly but not during critical rendering
+} else {
+  // Fallback for browsers that don't support requestIdleCallback
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(
+  <React.StrictMode>
+    <HelmetProvider>
+      <BrowserRouter>
+        <Suspense fallback={<LoadingFallback />}>
+          <AudioProvider>
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="/algorithms/:algorithmName" element={<App />} />
+              <Route path="/contributions/overview" element={<App />} />
+              <Route path="/contributions/guide" element={<App />} />
+              <Route path="/contributions/ssoc" element={<App />} />
+              <Route path="/contributions" element={<App />} />
+              <Route path="*" element={<App />} />
+            </Routes>
+          </AudioProvider>
+        </Suspense>
+        {shouldRenderAnalytics && (
+          <Suspense fallback={null}>
+            <SpeedInsights debug={import.meta.env.DEV} />
+            <Analytics beforeSend={beforeSend} />
+          </Suspense>
+        )}
+      </BrowserRouter>
+    </HelmetProvider>
+  </React.StrictMode>
+);
 }

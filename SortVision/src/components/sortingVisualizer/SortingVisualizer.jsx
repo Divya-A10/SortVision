@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from 'react-router-dom';
 import { useAudio } from '@/hooks/useAudio';
+import { audioEngine } from "@/utils/audioEngine";
+
 
 // Import subcomponents
 import SortingHeader from './SortingHeader';
@@ -221,6 +223,14 @@ const SortingVisualizer = ({ initialAlgorithm = 'bubble', activeTab = 'controls'
   useEffect(() => {
     setStep(currentBar);
   }, [currentBar]);
+  // Initialize audioEngine
+useEffect(() => {
+  audioEngine.enableAudio();
+
+  return () => {
+    audioEngine.closeAudio();
+  };
+}, []);
 
 
   //=============================================================================
